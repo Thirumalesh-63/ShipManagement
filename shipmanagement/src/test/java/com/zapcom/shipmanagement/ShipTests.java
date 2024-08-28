@@ -42,11 +42,11 @@ public class ShipTests {
 
     @Test
     public void testCreateShip() {
-        when(shipService.createShip(any(Ship.class))).thenReturn(ship);
+        when(shipService.createShip(any(Ship.class),eq(1))).thenReturn(ship);
 
-        ResponseEntity<Ship> response = shipController.createShip(ship);
+        ResponseEntity<Ship> response = shipController.createShip(ship,eq(1));
 
-        verify(shipService, times(1)).createShip(any(Ship.class));
+        verify(shipService, times(1)).createShip(any(Ship.class),eq(1));
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(ship, response.getBody());
     }

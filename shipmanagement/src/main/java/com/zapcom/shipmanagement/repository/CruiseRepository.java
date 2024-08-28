@@ -2,6 +2,7 @@ package com.zapcom.shipmanagement.repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,5 +27,7 @@ public interface CruiseRepository extends MongoRepository<Cruise, Integer> {
 
 	@Query("{'startdate': {$gte: ?0}, 'enddate': {$lte: ?1}}")
 	public List<Cruise> findCruisesByDates(Date startDate, Date endDate);
+
+	public Optional<Cruise> findBycruiseName(String cruiseName);
 
 }

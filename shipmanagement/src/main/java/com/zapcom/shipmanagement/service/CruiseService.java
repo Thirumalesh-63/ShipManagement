@@ -82,6 +82,8 @@ public class CruiseService {
 			cruise.setCruiseline(ship.get().getCruiseline());
 			cruise.setEnddestination(cruiseDetails.getEnddestination());
 			cruise.setStartdestination(cruiseDetails.getStartdestination());
+			cruise.setCruiseName(cruiseDetails.getCruiseName());
+			cruise.setItinerary(cruiseDetails.getItinerary());
 			cruise.setStartdate(cruiseDetails.getStartdate());
 			cruise.setEnddate(cruiseDetails.getStartdate());
 			return cruiseRepository.save(cruise);
@@ -133,30 +135,28 @@ public class CruiseService {
 
 	public Page<Cruise> getAllCruisesByStartdestination(String startdestination,int page,int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		// TODO Auto-generated method stub
 		return cruiseRepository.findByStartdestination(startdestination,pageable);
 	}
 
 	public Page<Cruise> getAllCruisesBYenddestination(String enddestination,int page,int size) {
-		// TODO Auto-generated method stub
 		Pageable pageable = PageRequest.of(page, size);
-		// TODO Auto-generated method stub
 		return cruiseRepository.findByEnddestination(enddestination,pageable);
 	}
 
 	public Page<Cruise> getAllCruisesBYcruiseline(String cruiseline,int page,int size) {
 
 		Cruiseline cr=cruiselinerepo.findByName(cruiseline);
-		// TODO Auto-generated method stub
 		Pageable pageable = PageRequest.of(page, size);
 
 		return cruiseRepository.findBycruiseline(cr,pageable);
 	}
 
 	public List<String> getshipitinerary(String shipname) {
-		// TODO Auto-generated method stub
+		System.err.println(shipname);
 		Ship ship=shiprepository.findByName(shipname);
+		System.err.println(ship.getName());
 		Cruise cruise= cruiseRepository.findByShip(ship);
+		System.err.println(cruise);
 		return cruise.getItinerary();
 	}
 
@@ -181,6 +181,14 @@ public class CruiseService {
 			throw new CruiseNotFound("cruise not found with the id "+id);
 	}
 
+	public Cruise getCruiseBycruiseNmae(String cruiseName) {
+		Optional<Cruise> cruise=cruiseRepository.findBycruiseName(cruiseName);
+		if(cruise.isPresent()) {
+			return cruise.get();
+		}
+		else
+			throw new CruiseNotFound("cruise not found with the name "+cruiseName);
+	}
 
 
 

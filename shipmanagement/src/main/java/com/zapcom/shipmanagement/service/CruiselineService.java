@@ -30,10 +30,10 @@ public class CruiselineService {
 
 
     // Create or Update a CruiseLine
-    public Cruiseline saveCruiseLine(Cruiseline cruiseLine) {
+    public Cruiseline saveCruiseLine(Cruiseline cruiseline) {
     	int id=generateSequence("CruiseLine");
-    	cruiseLine.setId(id);
-        return cruiselinerepo.save(cruiseLine);
+    	cruiseline.setId(id);
+        return cruiselinerepo.save(cruiseline);
     }
 
     @Transactional
@@ -83,11 +83,11 @@ public class CruiselineService {
     public Cruiseline updateCruiseLine(int id, Cruiseline updatedCruiseLine) {
         Optional<Cruiseline> existingCruiseLine = cruiselinerepo.findById(id);
         if (existingCruiseLine.isPresent()) {
-        	Cruiseline cruiseLine = existingCruiseLine.get();
-            cruiseLine.setName(updatedCruiseLine.getName());
-            cruiseLine.setHeadquarters(updatedCruiseLine.getHeadquarters());
-            cruiseLine.setContactnumber(updatedCruiseLine.getContactnumber());
-            return cruiselinerepo.save(cruiseLine);
+        	Cruiseline cruiseline = existingCruiseLine.get();
+            cruiseline.setName(updatedCruiseLine.getName());
+            cruiseline.setHeadquarters(updatedCruiseLine.getHeadquarters());
+            cruiseline.setContactnumber(updatedCruiseLine.getContactnumber());
+            return cruiselinerepo.save(cruiseline);
         } else {
             throw new RuntimeException("CruiseLine not found with id: " + id);
         }

@@ -27,38 +27,38 @@ public class CruiselineController {
 	@Autowired
     private CruiselineService cruiselineservice;
     // Create a new CruiseLine
-    @PostMapping("/cruiseline")
-    public ResponseEntity<Cruiseline> createCruiseLine(@RequestBody Cruiseline cruiseLine) {
-    	Cruiseline savedCruiseLine = cruiselineservice.saveCruiseLine(cruiseLine);
+    @PostMapping("/admin/cruiseline")
+    public ResponseEntity<Cruiseline> createCruiseLine(@RequestBody Cruiseline cruiseline) {
+    	Cruiseline savedCruiseLine = cruiselineservice.saveCruiseLine(cruiseline);
         return new ResponseEntity<>(savedCruiseLine,HttpStatus.CREATED);
     }
 
     // Retrieve all CruiseLines
-    @GetMapping("/cruiseline")
+    @GetMapping("/admin/cruiseline")
     public ResponseEntity<List<Cruiseline>> getAllCruiseLines(
     		@RequestParam(defaultValue = "0") int page,@RequestParam(defaultValue = "10") int size) {
 
-        Page<Cruiseline> cruiseLines = cruiselineservice.getAllCruiseLines(page,size);
+        Page<Cruiseline> cruiselines = cruiselineservice.getAllCruiseLines(page,size);
         
-        return ResponseEntity.ok(cruiseLines.getContent());
+        return ResponseEntity.ok(cruiselines.getContent());
     }
 
     // Retrieve a specific CruiseLine by ID
-    @GetMapping("/cruiseline/{id}")
+    @GetMapping("/admin/cruiseline/{id}")
     public ResponseEntity<Cruiseline> getCruiseLineById(@PathVariable int id) {
-        Optional<Cruiseline> cruiseLine = cruiselineservice.getCruiseLineById(id);
-        return new ResponseEntity<Cruiseline>(cruiseLine.get(),HttpStatus.OK);
+        Optional<Cruiseline> cruiseline = cruiselineservice.getCruiseLineById(id);
+        return new ResponseEntity<Cruiseline>(cruiseline.get(),HttpStatus.OK);
     }
 
     // Update an existing CruiseLine
-    @PutMapping("/cruiseline/{id}")
+    @PutMapping("/admin/cruiseline/{id}")
     public ResponseEntity<Cruiseline> updateCruiseLine(@PathVariable int id, @RequestBody Cruiseline cruiseLineDetails) {
     	Cruiseline updatedCruiseLine = cruiselineservice.updateCruiseLine(id, cruiseLineDetails);
        return new ResponseEntity<Cruiseline>(updatedCruiseLine,HttpStatus.OK);
     }
 
     // Delete a specific CruiseLine by ID
-    @DeleteMapping("/cruiseline/{id}")
+    @DeleteMapping("/admin/cruiseline/{id}")
     public ResponseEntity<String> deleteCruiseLine(@PathVariable int id) {
     	
     	 cruiselineservice.deleteCruiseLine(id);;

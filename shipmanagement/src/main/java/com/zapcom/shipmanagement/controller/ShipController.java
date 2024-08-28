@@ -28,14 +28,14 @@ public class ShipController {
 	private ShipService shipService;
 
 	// Create a new Ship
-	@PostMapping("/ship")
-	public ResponseEntity<Ship> createShip(@RequestBody Ship ship) {
-		Ship createdShip = shipService.createShip(ship);
+	@PostMapping("/admin/ship/{id}")
+	public ResponseEntity<Ship> createShip(@RequestBody Ship ship,@PathVariable int id) {
+		Ship createdShip = shipService.createShip(ship,id);
 		return new ResponseEntity<>(createdShip,HttpStatus.CREATED);
 	}
 
 	// Retrieve all Ships
-	@GetMapping("/ship")
+	@GetMapping("/admin/ship")
 	public ResponseEntity<List<Ship>> getAllShips(
 			@RequestParam(defaultValue = "0") int page,@RequestParam(defaultValue = "10") int size) {
 		Page<Ship> ships = shipService.getAllShips(page,size);
@@ -44,14 +44,14 @@ public class ShipController {
 	}
 
 	// Retrieve a specific Ship by ID
-	@GetMapping("/ship/{id}")
+	@GetMapping("/admin/ship/{id}")
 	public ResponseEntity<Ship> getShipById(@PathVariable int id) {
 		Optional<Ship> ship = shipService.getShipById(id);
 		return new ResponseEntity<Ship>(ship.get(),HttpStatus.OK);
 	}
 
 	// Update an existing Ship
-	@PutMapping("/ship/{id}")
+	@PutMapping("/admin/ship/{id}")
 	public ResponseEntity<Ship> updateShip(@PathVariable int id, @RequestBody Ship shipDetails) {
 		Ship updatedShip = shipService.updateShip(id, shipDetails);
 		return ResponseEntity.ok(updatedShip);
@@ -59,7 +59,7 @@ public class ShipController {
 	}
 
 	// Delete a specific Ship by ID
-	@DeleteMapping("/ship/{id}")
+	@DeleteMapping("/admin/ship/{id}")
 	public ResponseEntity<String> deleteShip(@PathVariable int id) {
 
 		shipService.deleteShip(id);

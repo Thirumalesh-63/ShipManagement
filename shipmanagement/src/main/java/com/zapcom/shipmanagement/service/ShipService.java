@@ -3,6 +3,7 @@ package com.zapcom.shipmanagement.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,15 +12,28 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+
+import com.zapcom.common.model.Cruiseline;
 import com.zapcom.common.model.DatabaseSequence;
 import com.zapcom.common.model.Ship;
+import com.zapcom.common.model.User;
+import com.zapcom.shipmanagement.exceptionhandler.CruiselineNotFound;
 import com.zapcom.shipmanagement.exceptionhandler.ShipNotfound;
 import com.zapcom.shipmanagement.repository.ShipRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class ShipService {
@@ -31,11 +45,47 @@ public class ShipService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
+	private RestTemplate restTemplate;
+
+
+	public ShipService(RestTemplateBuilder builder) {
+
+		this.restTemplate=builder.build();
+
+	}
+
 	
-	 public Ship createShip(Ship ship) {
+	 public Ship createShip(Ship ship,int cid) {
 		 int id=generateSequence("ship");
 		 ship.setId(id);
-	        return shiprepository.save(ship);
+		 HttpServletRequest request = 
+					((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+			String jwtToken = request.getHeader("Authorization");  // Retrieve the token
+
+			// Create headers and add the JWT token
+			HttpHeaders headers = new HttpHeaders();
+			headers.set("Authorization", jwtToken);  // Use the same token
+
+			// Create the entity with the headers
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+
+			// Make the request with the token
+			ResponseEntity<Cruiseline> response = restTemplate.exchange(
+					"http://localhost:8083/shipmanagement/admin/cruiseline/{id}", 
+					HttpMethod.GET, 
+					entity, 
+					Cruiseline.class, 
+					cid
+					);
+
+			//User user=restTemplate.getForObject("http://localhost:8080/userregistry/user/{id}", User.class, id);
+
+			Cruiseline cruiseline = response.getBody();
+			if(cruiseline.getName()!=null) {
+				ship.setCruiseline(cruiseline);
+				  return shiprepository.save(ship);
+			}
+	        throw new CruiselineNotFound("cruiseline not find with the id "+id);
 	    }
 
 	    // Retrieve all Ships

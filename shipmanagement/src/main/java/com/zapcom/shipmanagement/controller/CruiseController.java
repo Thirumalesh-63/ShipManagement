@@ -34,14 +34,14 @@ public class CruiseController {
 	private CruiseService cruiseService;
 
     // Create a new Cruise
-    @PostMapping("/cruise/{sid}")
+    @PostMapping("/admin/cruise/{sid}")
     public ResponseEntity<Cruise> createCruise(@RequestBody Cruise cruise, @PathVariable int sid) {
     	Cruise createdCruise = cruiseService.createCruise(cruise,sid);
         return new ResponseEntity<>(createdCruise,HttpStatus.CREATED);
     }
     
     // Retrieve all Cruises
-    @GetMapping("/cruises")
+    @GetMapping("/admin/cruises")
     public ResponseEntity<List<Cruise>> getAllCruises(	
     		@RequestParam(defaultValue = "0") int page,@RequestParam(defaultValue = "10") int size) {
         Page<Cruise> cruises = cruiseService.getAllCruises(page,size);
@@ -55,7 +55,7 @@ public class CruiseController {
         return ResponseEntity.ok(cruises.getContent());
     }
     
-    @GetMapping("/cruise/{id}")
+    @GetMapping("/admin/cruise/{id}")
     public ResponseEntity<Cruise> getCruiseById(@PathVariable int id){
     		
         Cruise cruise = cruiseService.getCruiseById(id);
@@ -80,6 +80,13 @@ public class CruiseController {
         Cruise cruises = cruiseService.getAllByship(shipname);
         return ResponseEntity.ok(cruises);
     }
+    
+    @GetMapping("/cruises/cruisesBycruiseName/{cruiseName}")
+    public ResponseEntity<Cruise> getCruiseBycruiseNmae(@PathVariable String cruiseName ) {
+        Cruise cruises = cruiseService.getCruiseBycruiseNmae(cruiseName);
+        return ResponseEntity.ok(cruises);
+    }
+    
     
     @GetMapping("/cruises/itinerary/{ship}")
     public ResponseEntity<List<String>> getshipitinerary(@PathVariable String ship) {
@@ -108,7 +115,7 @@ public class CruiseController {
 
 
     // Update an existing Cruise
-    @PutMapping("/cruise/{id}")
+    @PutMapping("/admin/cruise/{id}")
     public ResponseEntity<Cruise> updateCruise(@PathVariable int id, @RequestBody Cruise cruiseDetails) {
     	Cruise updatedCruise = cruiseService.updateCruise(id, cruiseDetails);
         if (updatedCruise != null) {
@@ -119,7 +126,7 @@ public class CruiseController {
     }
 
     // Delete a specific Cruise by ID
-    @DeleteMapping("/cruise/{id}")
+    @DeleteMapping("/admin/cruise/{id}")
     public ResponseEntity<String> deleteCruise(@PathVariable int id) {
         
         boolean isDeleted = cruiseService.deleteCruise(id);
